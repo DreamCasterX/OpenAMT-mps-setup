@@ -14,8 +14,15 @@
 
 #### On the client (AMT device):
  + Run `sudo snap install lms`
- + Downlaod and copy rpc tool to the $HOME directory 
+ + Downlaod and copy RPC tool to the $HOME directory 
  + Run `sudo ./rpc activate -u wss://{Server's IP}/activate -n -profile {CCM profile name}` 
  + Run `sudo ./rpc amtinfo` to check status
+##
 
+### 
+#### Tutorial
+https://open-amt-cloud-toolkit.github.io/docs/2.25/GetStarted/prerequisites/
+
+#### Download RPC tool
+https://github.com/open-amt-cloud-toolkit/rpc-go/releases
 
