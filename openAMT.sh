@@ -3,7 +3,7 @@
 
 # CREATOR: mike.lu@hp.com
 # CHANGE DATE: 2024/8/21
-__version__="1.0"
+__version__="1.1"
 
 
 # Tutorial
@@ -15,16 +15,17 @@ __version__="1.0"
 
 # How To Use
 # On the MPS server (development system):
-#   1) Run `./openAMT.sh` as non-root user
-#   2) Enter IP address
-#   3) Log in the Sample Web UI (Username=admin, Password=P@ssw0rd)
-#   4) Add CIRA configs
-#   5) Add Profiles (CCM)
+#   1) Copy openAMT.sh to the $HOME directory 
+#   2) Run `./openAMT.sh` as non-root user
+#   3) Enter IP address
+#   4) Log in the Sample Web UI (Username=admin, Password=P@ssw0rd)
+#   5) Add CIRA configs
+#   6) Add Profiles (CCM)
 
 # On the client (AMT device):
 #   1) Run `sudo snap install lms`
-#   2) Downlaod and copy RPC tool to the $HOME directory 
-#   3) Run `sudo ./rpc activate -u wss://{Server's IP}/activate -n -profile {CCM profile name}` 
+#   2) Download and copy RPC tool to the $HOME directory 
+#   3) Run `sudo ./rpc activate -u wss://{SEVER IP}/activate -n -profile {CCM PROFILE NAME}` 
 #   4) Run `sudo ./rpc amtinfo` to check status
 
 
@@ -85,13 +86,13 @@ Update_script() {
 Update_script
 
 
-# Set IP to env file
-[[ ! -f ./MPS_config/env.HP ]] && echo "❌ Env file is not found in MPS Config folder!" && exit
-read -p 'Enter IP address: ' IP
-sed -i '15s/.*/MPS_COMMON_NAME='$(echo $IP)'/g' ./MPS_config/env.HP
+Install() {
+    # Set IP to env file
+    [[ ! -f ./MPS_config/env.HP ]] && echo "❌ Env file is not found in MPS Config folder!" && exit
+    read -p 'Enter IP address: ' IP
+    sed -i '15s/.*/MPS_COMMON_NAME='$(echo $IP)'/g' ./MPS_config/env.HP
 
-
-Install_docker() {	
+    # Install_docker	
     for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
     sudo apt-get update
     sudo apt-get install ca-certificates curl
@@ -105,30 +106,39 @@ Install_docker() {
     sudo apt update
     sudo apt -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     sudo usermod -aG docker $USER && sudo chmod a+rw /var/run/docker.sock
+
+    # Download Toolkit and set environment
+    git clone https://github.com/open-amt-cloud-toolkit/open-amt-cloud-toolkit --branch v2.25.0 --recursive
+    [[ -d ./open-amt-cloud-toolkit ]] && cp ./MPS_config/env.HP ./open-amt-cloud-toolkit/.env
+    [[ -d ./open-amt-cloud-toolkit ]] && cp ./MPS_config/kong.yaml.HP ./open-amt-cloud-toolkit/kong.yaml
+    [[ -d ./open-amt-cloud-toolkit ]] && cp ./MPS_config/docker-compose.yml.HP ./open-amt-cloud-toolkit/docker-compose.yml
+
+    # Run container
+    cd ./open-amt-cloud-toolkit
+    sudo docker compose pull
+    sudo docker compose up -d
+    sudo docker ps --format "table {{.Image}}\t{{.Status}}\t{{.Names}}"
+
+    # Open browser
+    firefox https://$IP
 }
-Install_docker
+
+Uninstall() {
+    [[ ! -d ./open-amt-cloud-toolkit ]] && echo 'Open AMT Toolkit is not installed, exiting...' && exit 
+    cd ./open-amt-cloud-toolkit && sudo docker compose down -v && sudo docker system prune -a --volumes
+    cd .. && rm -fr ./open-amt-cloud-toolkit
+}
 
 
-# Download Toolkit and set environment
-git clone https://github.com/open-amt-cloud-toolkit/open-amt-cloud-toolkit --branch v2.25.0 --recursive
-[[ -d ./open-amt-cloud-toolkit ]] && cp ./MPS_config/env.HP ./open-amt-cloud-toolkit/.env
-[[ -d ./open-amt-cloud-toolkit ]] && cp ./MPS_config/kong.yaml.HP ./open-amt-cloud-toolkit/kong.yaml
-[[ -d ./open-amt-cloud-toolkit ]] && cp ./MPS_config/docker-compose.yml.HP ./open-amt-cloud-toolkit/docker-compose.yml
-
-
-# Run container
-cd ./open-amt-cloud-toolkit
-sudo docker compose pull
-sudo docker compose up -d
-sudo docker ps --format "table {{.Image}}\t{{.Status}}\t{{.Names}}"
-
-
-# Open browser
-firefox https://$IP
-
-
-# Rebuild the contaniner & image
-# sudo docker compose down -v && sudo docker system prune -a --volumes
+echo -e "\n*** Open AMT Cloud Toolkit Installation Script ***\n"
+read -p "Install [i]   Uninstall [u]   Quit [q]" OPTION
+while [[ $OPTION != [IiUuQq] ]]; do 
+    echo -e "Please enter a valid option\n"
+    read -p "Install [i]   Uninstall [u]   Quit [q]" OPTION
+done
+[[ $OPTION == [Ii] ]] && Install
+[[ $OPTION == [Uu] ]] && Uninstall
+[[ $OPTION == [Qq] ]] && exit
 
 
 # ===========================[For reference ]===============================
