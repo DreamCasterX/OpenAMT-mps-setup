@@ -15,12 +15,11 @@ __version__="1.0"
 
 # How To Use
 # On the MPS server (development system):
-#   1) Copy openAMT.sh and MPS_config folder to the $HOME directory 
-#   2) Run `./openAMT.sh` as non-root user
-#   3) Enter the correct IP4 address
-#   4) Log in the Sample Web UI (Username=admin, Password=P@ssw0rd)
-#   5) Add CIRA configs
-#   6) Add Profiles (CCM)
+#   1) Run `./openAMT.sh` as non-root user
+#   2) Enter IP address
+#   3) Log in the Sample Web UI (Username=admin, Password=P@ssw0rd)
+#   4) Add CIRA configs
+#   5) Add Profiles (CCM)
 
 # On the client (AMT device):
 #   1) Run `sudo snap install lms`
