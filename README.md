@@ -5,9 +5,8 @@
 
 
 ####  On the MPS server (development system):
-  - Copy `openAMT.sh` and `MPS_config` folder to the $HOME directory 
   - Run `./openAMT.sh` as non-root user
-  - Enter the correct IP4 address
+  - Enter IP address
   - Log in the Sample Web UI (Username=`admin`, Password=`P@ssw0rd`)
   - Add CIRA configs
   - Add Profiles (CCM)
