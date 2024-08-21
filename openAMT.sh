@@ -64,8 +64,8 @@ Update_script() {
             rm -f README.md
             popd > /dev/null 2>&1
             sleep 3
-            sudo chmod 755 OpenAMT.sh
-            echo -e "Successfully updated! Please run OpenAMT.sh again.\n\n" ; exit 1
+            sudo chmod 755 openAMT.sh
+            echo -e "Successfully updated! Please run openAMT.sh again.\n\n" ; exit 1
         else
             echo -e "\n❌ Error occurred while downloading" ; exit 1
         fi 
