@@ -9,7 +9,7 @@ __version__="1.0"
 # Tutorial
 # https://open-amt-cloud-toolkit.github.io/docs/2.25/GetStarted/prerequisites/
 
-# Download rpc tool
+# Download RPC tool
 # https://github.com/open-amt-cloud-toolkit/rpc-go/releases
 
 
@@ -24,7 +24,7 @@ __version__="1.0"
 
 # On the client (AMT device):
 #   1) Run `sudo snap install lms`
-#   2) Downlaod and copy rpc tool to the $HOME directory 
+#   2) Downlaod and copy RPC tool to the $HOME directory 
 #   3) Run `sudo ./rpc activate -u wss://{Server's IP}/activate -n -profile {CCM profile name}` 
 #   4) Run `sudo ./rpc amtinfo` to check status
 
@@ -35,12 +35,13 @@ __version__="1.0"
 
 
 # Set IP
+[[ ! -d ./MPS_config ]] && echo "❌ MPS Config folder is not found!" && exit
 read -p 'Enter IP address: ' IP
 sed -i '15s/.*/MPS_COMMON_NAME='$(echo $IP)'/g' ./MPS_config/env.HP
 
 
 # Ensure Internet is connected
-! nslookup google.com > /dev/null && echo "❌ No Internet connection! Please check your network" && sleep 3 && exit 0
+! nslookup google.com > /dev/null && echo "❌ No Internet connection! Please check your network" && exit
 sudo apt update && sudo apt install git ca-certificates curl -y
 # sudo snap install go --classic
 
