@@ -36,6 +36,7 @@ __version__="1.0"
 
 # Set IP
 [[ ! -d ./MPS_config ]] && echo "❌ MPS Config folder is not found!" && exit
+[[ ! -f ./MPS_config/env.HP ]] && echo "❌ Env file is not found in MPS Config folder!" && exit
 read -p 'Enter IP address: ' IP
 sed -i '15s/.*/MPS_COMMON_NAME='$(echo $IP)'/g' ./MPS_config/env.HP
 
