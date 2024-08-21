@@ -19,6 +19,11 @@
  + Run `sudo ./rpc amtinfo` to check status
 ##
 
+
+### [Test environment]
+Ubuntu 22.04 LTS
+
+##
 ### 
 #### Tutorial
 https://open-amt-cloud-toolkit.github.io/docs/2.25/GetStarted/prerequisites/
