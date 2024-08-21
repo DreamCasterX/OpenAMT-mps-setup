@@ -124,17 +124,17 @@ Install() {
 }
 
 Uninstall() {
-    [[ ! -d ./open-amt-cloud-toolkit ]] && echo 'Open AMT Toolkit is not installed, exiting...' && exit 
+    [[ ! -d ./open-amt-cloud-toolkit ]] && echo -e '\n⚠️  Open AMT Cloud Toolkit is not installed, exiting...' && exit 
     cd ./open-amt-cloud-toolkit && sudo docker compose down -v && sudo docker system prune -a --volumes
     cd .. && rm -fr ./open-amt-cloud-toolkit
 }
 
 
 echo -e "\n*** Open AMT Cloud Toolkit Installation Script ***\n"
-read -p "Install [i]   Uninstall [u]   Quit [q]" OPTION
+read -p "Install [I]   Uninstall [U]   Quit [Q]" OPTION
 while [[ $OPTION != [IiUuQq] ]]; do 
     echo -e "Please enter a valid option\n"
-    read -p "Install [i]   Uninstall [u]   Quit [q]" OPTION
+    read -p "Install [I]   Uninstall [U]   Quit [Q]" OPTION
 done
 [[ $OPTION == [Ii] ]] && Install
 [[ $OPTION == [Uu] ]] && Uninstall
