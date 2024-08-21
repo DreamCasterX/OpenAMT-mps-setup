@@ -34,20 +34,15 @@ __version__="1.0"
 [[ $EUID == 0 ]] && echo -e "⚠️ Please run as non-root user.\n" && exit
 
 
-# Set IP
-[[ ! -d ./MPS_config ]] && echo "❌ MPS Config folder is not found!" && exit
-[[ ! -f ./MPS_config/env.HP ]] && echo "❌ Env file is not found in MPS Config folder!" && exit
-read -p 'Enter IP address: ' IP
-sed -i '15s/.*/MPS_COMMON_NAME='$(echo $IP)'/g' ./MPS_config/env.HP
-
-
 # Ensure Internet is connected
 ! nslookup google.com > /dev/null && echo "❌ No Internet connection! Please check your network" && exit
-sudo apt update && sudo apt install git ca-certificates curl -y
+! dpkg -l | grep -w ca-certificates > /dev/null && sudo apt update && sudo apt install ca-certificates -y
+[[ ! -f /usr/bin/curl ]] && sudo apt update && sudo apt install curl -y
+[[ ! -f /usr/bin/git ]] && sudo apt update && sudo apt install git -y
 # sudo snap install go --classic
 
 
-# Check the latest update of this script
+# Check the update and download MPS Config
 Update_script() {
     release_url=https://api.github.com/repos/DreamCasterX/OpenAMT-mps-setup/releases/latest
     new_version=$(curl -s "${release_url}" | grep '"tag_name":' | awk -F\" '{print $4}')
@@ -60,8 +55,8 @@ Update_script() {
         pushd "$PWD" > /dev/null 2>&1
         curl --silent --insecure --fail --retry-connrefused --retry 3 --retry-delay 2 --location --output ".OpenAMT-mps-setup.tar.gz" "${tarball_url}"
         if [[ -e ".OpenAMT-mps-setup.tar.gz" ]]; then
-	        tar -xf .OpenAMT-mps-setup.tar.gz -C "$PWD" --strip-components 1 > /dev/null 2>&1
-	        rm -f .OpenAMT-mps-setup.tar.gz
+	    tar -xf .OpenAMT-mps-setup.tar.gz -C "$PWD" --strip-components 1 > /dev/null 2>&1
+	    rm -f .OpenAMT-mps-setup.tar.gz
             rm -f README.md
             popd > /dev/null 2>&1
             sleep 3
@@ -70,9 +65,31 @@ Update_script() {
         else
             echo -e "\n❌ Error occurred while downloading" ; exit 1
         fi 
+    else
+        if [[ ! -d ./MPS_config ]]; then
+            echo -e "\nDownloading MPS Config....\n"
+            pushd "$PWD" > /dev/null 2>&1
+            wget --quiet --no-check-certificate --tries=3 --waitretry=2 --output-document=".OpenAMT-mps-setup.tar.gz" "${tarball_url}"
+            if [[ -e ".OpenAMT-mps-setup.tar.gz" ]]; then
+	        tar -xf .OpenAMT-mps-setup.tar.gz -C "$PWD" --strip-components 1 OpenAMT-mps-setup-$new_version/MPS_config > /dev/null 2>&1
+                rm -f .OpenAMT-mps-setup.tar.gz
+                popd > /dev/null 2>&1
+                sleep 3
+                sudo chmod 755 -R ./MPS_config
+                echo -e "\e[32mDone!\e[0m"
+            else
+                echo -e "\n\e[31mDownload MPS config failed.\e[0m" ; exit 1
+            fi	
+        fi		
     fi
 }
 Update_script
+
+
+# Set IP to env file
+[[ ! -f ./MPS_config/env.HP ]] && echo "❌ Env file is not found in MPS Config folder!" && exit
+read -p 'Enter IP address: ' IP
+sed -i '15s/.*/MPS_COMMON_NAME='$(echo $IP)'/g' ./MPS_config/env.HP
 
 
 Install_docker() {	
