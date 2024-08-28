@@ -14,8 +14,7 @@
 #### On the client (AMT device):
  + Run `sudo snap install lms`
  + Downlaod and copy RPC tool to the $HOME directory 
- + Run `sudo ./rpc activate -u wss://{Server's IP}/activate -n -profile {CCM profile name}` 
- + Run `sudo ./rpc amtinfo` to check status
+ + Run RPC commands based on DHCP or Static IP network
 ##
 
 
