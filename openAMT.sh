@@ -25,8 +25,7 @@ __version__="1.2"
 # On the client (AMT device):
 #   1) Run `sudo snap install lms`
 #   2) Download and copy RPC tool to the $HOME directory 
-#   3) Run `sudo ./rpc activate -u wss://{SEVER IP}/activate -n -profile {CCM PROFILE NAME}` 
-#   4) Run `sudo ./rpc amtinfo` to check status
+#   3) Run RPC commands based on DHCP or Static IP network
 
 
 
@@ -151,19 +150,24 @@ done
 [[ $OPTION == [Qq] ]] && exit
 
 
-# ===========================[RPC commands]===============================
-# Activate (Cloud)
+# ======================[RPC commands for Toolkit]==========================
+# Activate
 # sudo ./rpc activate -u wss://10.1.1.1/activate -n -profile myCCM
 
-# Deactivate (Cloud)
+# Static IP only
+# sudo ./rpc configure wired -static -ipaddress 10.1.1.2 -subnetmask 255.255.255.0 -gateway 10.1.1.1 -primarydns 8.8.8.8 -password P@ssw0rd
+
+# Deactivate
 # sudo ./rpc deactivate -u wss://10.1.1.1/activate -n -password P@ssw0rd
 
-
-# Activate (Local)
+# ======================[RPC commands for Console]==========================
+# Activate
 # sudo ./rpc activate -local -ccm -password P@ssw0rd
-# sudo ./rpc configure wired -static -ipaddress 10.1.1.2 -subnetmask 255.255.255.0 -gateway 10.1.1.1 -primarydns 8.8.8.8 -local -ccm -password P@ssw0rd
 
-# Deactivate (Local)
+# Static IP only
+# sudo ./rpc configure wired -static -ipaddress 10.1.1.2 -subnetmask 255.255.255.0 -gateway 10.1.1.1 -primarydns 8.8.8.8 -password P@ssw0rd
+
+# Deactivate
 # sudo ./rpc deactivate -local
 
 # ===========================[Log capture]===============================
@@ -172,6 +176,5 @@ done
 
 # Get RPC log (from client - manually save the output to rpc.log)
 # sudo ./rpc activate -u wss://10.1.1.1/activate -n -profile myCCM -v  
-
 
 
