@@ -14,7 +14,7 @@
 #### On the client (AMT device):
  + Run `sudo snap install lms`
  + Downlaod and copy RPC tool to the $HOME directory 
- + Run RPC commands based on DHCP or Static IP network
+ + Run RPC activate commands depending on DHCP or Static IP network
 ##
 
 
