@@ -2,8 +2,8 @@
 
 
 # CREATOR: mike.lu@hp.com
-# CHANGE DATE: 2024/8/21
-__version__="1.1"
+# CHANGE DATE: 2024/8/28
+__version__="1.2"
 
 
 # Tutorial
@@ -39,7 +39,6 @@ __version__="1.1"
 ! dpkg -l | grep -w ca-certificates > /dev/null && sudo apt update && sudo apt install ca-certificates -y
 [[ ! -f /usr/bin/curl ]] && sudo apt update && sudo apt install curl -y
 [[ ! -f /usr/bin/git ]] && sudo apt update && sudo apt install git -y
-# sudo snap install go --classic
 
 
 # Check the update and download MPS Config
@@ -129,32 +128,50 @@ Uninstall() {
     cd .. && rm -fr ./open-amt-cloud-toolkit
 }
 
+Console() {
+    lateset_version=v1.0.0-alpha.9  # https://github.com/open-amt-cloud-toolkit/console/releases
+    echo "Downloading Console application..."
+    wget -q https://github.com/open-amt-cloud-toolkit/console/releases/download/$lateset_version/console_linux_x64.tar.gz
+    echo "Done"
+    tar -xf console_linux_x64.tar.gz -C "$PWD" && rm -f console_linux_x64.tar.gz
+    sudo rm -fr /root/.config/device-management-toolkit && sudo mkdir -p /root/.config/device-management-toolkit
+    sudo ./console_linux_x64 &
+    firefox localhost:8181
+}
 
 echo -e "\n*** Open AMT Cloud Toolkit Installation Script ***\n"
-read -p "Install [I]   Uninstall [U]   Quit [Q]" OPTION
-while [[ $OPTION != [IiUuQq] ]]; do 
+read -p "Install [I]   Uninstall [U]   Console [C]   Quit [Q]" OPTION
+while [[ $OPTION != [IiUuQqCc] ]]; do 
     echo -e "Please enter a valid option\n"
     read -p "Install [I]   Uninstall [U]   Quit [Q]" OPTION
 done
 [[ $OPTION == [Ii] ]] && Install
 [[ $OPTION == [Uu] ]] && Uninstall
+[[ $OPTION == [Cc] ]] && Console
 [[ $OPTION == [Qq] ]] && exit
 
 
-# ===========================[For reference ]===============================
-# Activate
+# ===========================[RPC commands]===============================
+# Activate (Cloud)
 # sudo ./rpc activate -u wss://10.1.1.1/activate -n -profile myCCM
 
-# Deactivate 
+# Deactivate (Cloud)
 # sudo ./rpc deactivate -u wss://10.1.1.1/activate -n -password P@ssw0rd
 
+
+# Activate (Local)
+# sudo ./rpc activate -local -ccm -password P@ssw0rd
+# sudo ./rpc configure wired -static -ipaddress 10.1.1.2 -subnetmask 255.255.255.0 -gateway 10.1.1.1 -primarydns 8.8.8.8 -local -ccm -password P@ssw0rd
+
+# Deactivate (Local)
+# sudo ./rpc deactivate -local
+
+# ===========================[Log capture]===============================
 # Get RPS log (from MPS server)
 # sudo docker logs {RPS container ID} > rps.log 2>&1
 
 # Get RPC log (from client - manually save the output to rpc.log)
 # sudo ./rpc activate -u wss://10.1.1.1/activate -n -profile myCCM -v  
 
-# Change NIC Mac address
-# sudo ifconfig eno1 hw ether 0c:72:5c:0f:80:73
 
 
